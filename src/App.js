@@ -1,90 +1,79 @@
-import { useState } from "react";
-import './App.css';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import GoldProducts from './pages/GoldProducts'
-import SilverProducts from './pages/Silverproduct'
-import DiamondProducts from './pages/DiamondProduct'
-import PlatinumProducts from './pages/PlatinumProducts'
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import "./App.css";
 
-function App() {
+import ProductPage from "./pages/ProductPage";
+import CartPage from "./pages/CartPage";
+import WishlistPage from "./pages/WishlistPage";
+import AdminPage from "./pages/AdminPage";
 
-  const [activeMetal, setActiveMetal] = useState("Gold"); // ✅ default active
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 
-  const metals = ["Gold", "Silver", "Diamond", "Platinum"];
-
-  const Gold22kt = '14315.0';
-  const Gold24kt = '15731.0';  
-  const SilevrRate = '270.0';
+function AppInner() {
+  const [globalSearch, setGlobalSearch] = useState("");
 
   return (
-    <div className="App">
-
-      <Navbar />
-
-      <div className='Main'>
-
-        <div className='metal' style={{ background: '#eee' }}>
-          <div className='container d-flex justify-content-between'>
-
-            <ul className='d-flex p-lg-2 fw-bold gap-lg-3 metalList'>
-
-              {metals.map((item) => (
-                <li className='wrapper' key={item}>
-                  <button
-                    className={`metallink ${activeMetal === item ? "activeMetal" : ""}`}
-                    onClick={() => setActiveMetal(item)}
-                  >
-                    <span>{item}</span>
-                  </button>
-                </li>
-              ))}
-
-            </ul>
-
-              <div className="d-flex py-lg-2 justify-content-end align-items-center" style={{fontSize:'.8rem'}}>
-                  {/* <label className="fw-bold me-3">
-                    <span>Gold 22KT : ₹{Gold22kt} | </span>
-                    <span>Gold 24KT : ₹{Gold24kt} | </span>
-                    <span>Silver : ₹{SilevrRate}</span>
-                    </label> */}
-
-                    <label className="fw-bold me-3" style={{width:"50%"}}>
-                      <marquee behavior="scroll" direction="left" scrollamount="6">
-                        Gold 22KT : ₹{Gold22kt} &nbsp;&nbsp; | &nbsp;&nbsp;
-                        Gold 24KT : ₹{Gold24kt} &nbsp;&nbsp; | &nbsp;&nbsp;
-                        Silver : ₹{SilevrRate}
-                      </marquee>
-                    </label>
-
-                  <button className="text-sm fw-bold btn-sm btn-warning btn px-lg-3">
-                    <i class="bi bi-percent fw-bold me-1"></i>
-                    offer
-                  </button>   
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div className="page-shell">
+                <Navbar searchTerm={globalSearch} onSearch={setGlobalSearch} />
+                <div className="Main">
+                  <ProductPage initialTerm={globalSearch} />
+                </div>
+                <Footer />
               </div>
-              
+            }
+          />
 
-          </div>
-        </div>
+          <Route
+            path="/cart"
+            element={
+              <div className="page-shell">
+                <Navbar searchTerm={globalSearch} onSearch={setGlobalSearch} />
+                <div className="Main">
+                  <CartPage />
+                </div>
+                <Footer />
+              </div>
+            }
+          />
 
-        <div className='product'>
+          <Route
+            path="/wishlist"
+            element={
+              <div className="page-shell">
+                <Navbar searchTerm={globalSearch} onSearch={setGlobalSearch} />
+                <div className="Main">
+                  <WishlistPage />
+                </div>
+                <Footer />
+              </div>
+            }
+          />
 
-            <div className="metalTab">
+          <Route
+            path="/admin"
+            element={
+              <div>
+                <AdminPage />
+              </div>
+            }
+          />
 
-              {activeMetal === "Gold" && <GoldProducts />}
-              {activeMetal === "Silver" && <SilverProducts />}
-              {activeMetal === "Diamond" && <DiamondProducts />}
-              {activeMetal === "Platinum" && <PlatinumProducts />}
-
-            </div>
-
-        </div>
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
       </div>
-
-      <Footer />
-
-    </div>
+    </Router>
   );
+}
+
+function App() {
+  return <AppInner />;
 }
 
 export default App;
